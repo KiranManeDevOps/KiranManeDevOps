@@ -1,20 +1,60 @@
 # Kiran Mane
 
-DevOps engineer in Pune, India. Four years, mostly AWS and Kubernetes. Right now that
-means running on-premises RKE2 clusters and AWS EKS platforms end to end.
+DevOps engineer in Pune, India. I run on-premises RKE2 Kubernetes and AWS EKS platforms
+end to end — from bare metal and Terraform through storage, backup, security and observability.
 
-**What that has meant in practice:**
+## What I've built
 
-- Built RKE2 Kubernetes clusters on bare metal, 3–7 nodes, from machine provisioning through MetalLB, Traefik, cert-manager, kube-vip, and Calico default-deny NetworkPolicy.
-- Moved cluster storage off Rook-Ceph onto TopoLVM once it was clear the hardware — 1 GbE, HDD-backed — was never going to meet Ceph's requirements, then rebuilt the backup story around VolSync/restic and `pg_dumpall` into MinIO to cover what node-local storage gives up.
-- Wrote the cluster's monitoring service myself: ~3,800 lines of Python on FastAPI, running 70 Prometheus-backed health checks every 30 seconds with capacity forecasting and alert routing across five channels. No kubeconfig, no pod exec, no extra cluster permissions.
-- Migrated live ingress from Nginx Proxy Manager to Traefik, including root-causing and recovering a production outage traced to a config key that is valid in K3s and fatal in RKE2.
-- On AWS: one Terraform codebase across dev/qa/uat/prod — EKS with IRSA-scoped service accounts, Graviton Spot node groups behind cluster-autoscaler, HPA and PodDisruptionBudget on every deployment, ECS alongside it, and scheduled off-hours teardown of non-production compute, databases and managed Airflow.
+**On-prem Kubernetes**
+- Built RKE2 clusters on bare metal, 3–7 nodes, from machine provisioning through MetalLB, Traefik, cert-manager, kube-vip and Calico default-deny NetworkPolicy.
+- Moved cluster storage off Rook-Ceph onto TopoLVM once it was clear the hardware — 1 GbE, HDD-backed — was never going to meet Ceph's requirements, then rebuilt backup around Velero, VolSync/restic and `pg_dumpall` into MinIO (24-hour RPO).
+- Migrated live ingress from Nginx Proxy Manager to Traefik, including root-causing a production outage traced to a config key that is valid in K3s and fatal in RKE2.
 
-**Tools** Kubernetes · RKE2 · EKS · ECS · Terraform · Helm · Docker · Jenkins · Prometheus · Grafana · SigNoz · Rook-Ceph · TopoLVM · MetalLB · Traefik · cert-manager · Calico · VolSync · MinIO · Python · Bash
+**Disaster recovery & reliability**
+- Automated DR failover for a GPU-backed on-prem AI service: detects the failure, scales a standby AWS environment (including on-demand GPU capacity), and switches Route 53 traffic — recovery in minutes, near-zero data loss via continuous replication.
+- Automated voice-service monitoring that detects production failures, alerts with context and triggers rolling restarts — MTTR from hours to minutes.
+- Root-caused a recurring high-CPU incident in a messaging system and replaced the manual fix with an automated remediation service.
 
-Executive PG Certification in Cloud Computing and DevOps, iHub Divya Sampark at IIT Roorkee.
+**Observability & AIOps**
+- Built an AI-powered SRE investigation platform: give it a symptom and a time window, and it correlates Prometheus, SigNoz/OpenTelemetry traces, logs and Percona PMM into a timeline, tested root-cause hypotheses and a remediation plan, with an LLM (Claude API) narrating the findings.
+- Wrote a cluster monitoring service in Python/FastAPI — 70 Prometheus-backed health checks every 30 seconds, capacity forecasting and per-rule alert routing to Slack, Teams, Discord, PagerDuty, email and webhooks, with no extra cluster permissions.
 
-Most of what I build lives in private infrastructure repositories; GitHub is the public slice of it.
+**AWS**
+- Migrated a live application across AWS regions and accounts with zero downtime using weighted Route 53 traffic shifting.
+- Cut monthly cloud spend by 27% in four months through rightsizing and resource lifecycle policies.
+- One Terraform codebase across dev/qa/uat/prod — EKS with IRSA-scoped service accounts, Graviton Spot node groups behind cluster-autoscaler, HPA and PodDisruptionBudget on every deployment, ECS alongside it, and scheduled off-hours teardown of non-production compute, databases and managed Airflow.
+- Managed IAM and least-privilege access across 17 AWS accounts; Kubernetes RBAC on EKS (IAM-integrated) and RKE2 (Rancher).
+
+**Security & CI/CD**
+- OIDC federation so on-prem workloads assume AWS IAM roles for S3 — no static credentials between environments.
+- Removed hardcoded credentials by fetching AWS Secrets Manager values at container startup across EKS and ECS.
+- Trivy, ECR scan-on-push and SonarQube in the pipeline; WAF with geo-restriction rules for production apps.
+- Jenkins CI/CD across build, test and deploy; GitOps delivery with Helm and Argo CD.
+
+## Featured projects
+
+| Project | What it is |
+|---|---|
+| [**xray-sre-agent**](https://github.com/KiranManeDevOps/xray-sre-agent) | AI-assisted incident investigation and root-cause analysis for Kubernetes. Read-only; a deterministic engine does the analysis, the LLM only explains it. |
+| [**Jenkins-jcasc**](https://github.com/KiranManeDevOps/Jenkins-jcasc) | Jenkins on Kubernetes as immutable infrastructure — JCasC, a Job DSL seed job, OIDC/RBAC and ephemeral agents across clusters. Rebuildable from Git in about fifteen minutes. |
+| [**postgres-inmemory**](https://github.com/KiranManeDevOps/postgres-inmemory) | Hybrid PostgreSQL: durable data on disk, temp/scratch space on a RAM-backed tablespace. Ships a reproducible benchmark and documents exactly when it helps and when the page cache already does the job. |
+
+## Tools
+
+**Kubernetes** RKE2 · EKS · ECS · Rancher · Helm · Docker<br>
+**Networking & storage** MetalLB · Traefik · cert-manager · Calico · Rook-Ceph · TopoLVM · MinIO<br>
+**Backup & DR** Velero · VolSync · Route 53 failover<br>
+**IaC & delivery** Terraform · CloudFormation · Ansible · Proxmox · Jenkins · Argo CD · AWS CodePipeline<br>
+**Observability** Prometheus · Grafana · SigNoz · OpenTelemetry · Percona PMM · CloudWatch · Kubecost<br>
+**AWS** EC2 · EKS · ECR · IAM · VPC · S3 · RDS · ElastiCache · OpenSearch · Lambda · SQS · SNS · CloudFront · WAF · Secrets Manager<br>
+**Security** Trivy · SonarQube · OIDC federation · Kubernetes RBAC<br>
+**Code** Python · Bash · Groovy · Claude API
+
+## Certifications
+
+- Executive PG Certification in Cloud Computing and DevOps — iHub Divya Sampark, IIT Roorkee
+- Advanced PG Certificate in AI Engineering on Cloud and AIOps — IIT Roorkee *(in progress)*
+
+Most of what I build lives in private infrastructure repositories; the projects above are the public slice of it.
 
 📫 [kiranmane0074@gmail.com](mailto:kiranmane0074@gmail.com)
