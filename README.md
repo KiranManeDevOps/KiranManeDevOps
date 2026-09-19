@@ -7,7 +7,7 @@ end to end — from bare metal and Terraform through storage, backup, security a
 
 **On-prem Kubernetes**
 - Built RKE2 clusters on bare metal, 3–7 nodes, from machine provisioning through MetalLB, Traefik, cert-manager, kube-vip and Calico default-deny NetworkPolicy.
-- Moved cluster storage off Rook-Ceph onto TopoLVM once it was clear the hardware — 1 GbE, HDD-backed — was never going to meet Ceph's requirements, then rebuilt backup around Velero, VolSync/restic and `pg_dumpall` into MinIO (24-hour RPO).
+- Run both Rook-Ceph and node-local TopoLVM, and pick per cluster: Ceph where the network and drives justify replicated storage, TopoLVM where predictable low latency and a small operational surface matter more — then covered what node-local storage gives up with Velero, VolSync/restic and `pg_dumpall` into MinIO (24-hour RPO).
 - Migrated live ingress from Nginx Proxy Manager to Traefik, including root-causing a production outage traced to a config key that is valid in K3s and fatal in RKE2.
 
 **Disaster recovery & reliability**
@@ -35,6 +35,7 @@ end to end — from bare metal and Terraform through storage, backup, security a
 
 | Project | What it is |
 |---|---|
+| [**bare-metal-kubernetes**](https://github.com/KiranManeDevOps/bare-metal-kubernetes) | Two on-premises RKE2 platforms built from bare metal: architecture and build order, the Rook-Ceph vs TopoLVM storage decision, backup/DR, and sanitized manifests. |
 | [**xray-sre-agent**](https://github.com/KiranManeDevOps/xray-sre-agent) | AI-assisted incident investigation and root-cause analysis for Kubernetes. Read-only; a deterministic engine does the analysis, the LLM only explains it. |
 | [**Jenkins-jcasc**](https://github.com/KiranManeDevOps/Jenkins-jcasc) | Jenkins on Kubernetes as immutable infrastructure — JCasC, a Job DSL seed job, OIDC/RBAC and ephemeral agents across clusters. Rebuildable from Git in about fifteen minutes. |
 | [**postgres-inmemory**](https://github.com/KiranManeDevOps/postgres-inmemory) | Hybrid PostgreSQL: durable data on disk, temp/scratch space on a RAM-backed tablespace. Ships a reproducible benchmark and documents exactly when it helps and when the page cache already does the job. |
