@@ -8,6 +8,7 @@ end to end — from bare metal and Terraform through storage, backup, security a
 **On-prem Kubernetes**
 - Built RKE2 clusters on bare metal, 3–7 nodes, from machine provisioning through MetalLB, Traefik, cert-manager, kube-vip and Calico default-deny NetworkPolicy.
 - Run both Rook-Ceph and node-local TopoLVM, and pick per cluster: Ceph where the network and drives justify replicated storage, TopoLVM where predictable low latency and a small operational surface matter more — then covered what node-local storage gives up with Velero, VolSync/restic and `pg_dumpall` into MinIO (24-hour RPO).
+- Deployed a hybrid PostgreSQL on Kubernetes — durable data and WAL on separate, differently provisioned volumes, and sort/hash scratch on a RAM-backed tablespace — improving query performance by **40–70%** under production load with `fsync` and `synchronous_commit` left on.
 - Migrated live ingress from Nginx Proxy Manager to Traefik, including root-causing a production outage traced to a config key that is valid in K3s and fatal in RKE2.
 
 **Disaster recovery & reliability**
