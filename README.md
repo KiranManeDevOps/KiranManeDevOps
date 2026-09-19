@@ -35,7 +35,8 @@ end to end — from bare metal and Terraform through storage, backup, security a
 
 | Project | What it is |
 |---|---|
-| [**bare-metal-kubernetes**](https://github.com/KiranManeDevOps/bare-metal-kubernetes) | Two on-premises RKE2 platforms built from bare metal: architecture and build order, the Rook-Ceph vs TopoLVM storage decision, backup/DR, and sanitized manifests. |
+| [**bare-metal-kubernetes**](https://github.com/KiranManeDevOps/bare-metal-kubernetes) | Two on-premises RKE2 platforms built from bare metal: architecture and build order, the Rook-Ceph vs TopoLVM storage decision, backup/DR, Jenkins as code, and sanitized manifests. |
+| [**sre-investigation-platform**](https://github.com/KiranManeDevOps/sre-investigation-platform) | Design of an AI-assisted incident investigation platform: anomaly onset detection, hypotheses that are tested rather than listed, explainable confidence, and blast radius — a deterministic engine computes, the model only narrates. |
 
 ## Tools
 
